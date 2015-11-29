@@ -4,27 +4,27 @@ if (typeof define !== 'function') { var define = require('amdefine')(module); }
 define([ 'jquery' ], function($) {
   return {
     async : function(value) {
-      var deferred = $.Deferred();
+      return new Promise(function(resolve, reject) {
 
-      setTimeout(function() {
-        deferred.resolve(value);
-      }, 1);
+        setTimeout(function() {
+          resolve(value);
+        }, 1);
 
-      return deferred.promise();
+      });
     },
 
     manipulateRemoteData : function(url) {
-      var deferred = $.Deferred();
+      return new Promise(function(resolve, reject) {
+        $.getJSON(url)
+          .then(function(data) {
+            var people = $.map(data.people, function(person) {
+              return person.name;
+            });
 
-      $.getJSON(url).then(function(data) {
-        var people = $.map(data.people, function(person) {
-          return person.name;
-        });
-
-        deferred.resolve(people.sort());
+            resolve(people.sort());
+          })
+          .fail(reject);
       });
-
-      return deferred.promise();
     }
   };
 });
